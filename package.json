@@ -5,7 +5,7 @@
   "repository": "https://github.com/susisu/catcher.git",
   "author": "Susisu <susisu2413@yahoo.co.jp>",
   "license": "MIT",
-  "main": "index.js",
+  "main": "lib/index.js",
   "files": [
     "lib"
   ],
