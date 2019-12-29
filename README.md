@@ -14,8 +14,7 @@ yarn add @susisu/catcher
 import { Catcher } from "@susisu/catcher";
 
 const catcher = new Catcher<{ list: string[] }>({
-  initData: { list: [] },
-  fetcher : () => fetchFromSource(params),
+  fetcher: () => fetchFromSource(params),
 });
 
 // data1 = data fetched from the source
