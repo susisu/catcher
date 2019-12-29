@@ -1,4 +1,4 @@
-## 0.2.0 (yyyy-mm-dd)
+## 0.2.0 (2019-12-29)
 ### Breaking changes
 - `initData` is now optional and `fresh` is removed from config
 - `#fetch()` can now be rejected if fetcher failed
