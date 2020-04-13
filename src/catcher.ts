@@ -4,31 +4,31 @@ type Config<T> = Readonly<{
   /**
    * A function that fetches data.
    */
-  fetcher: () => Promise<T>,
+  fetcher: () => Promise<T>;
   /**
    * Optional initial data stored in the cache. If specified, new data will not be fetched until
    * the cache is expired.
    */
-  initData?: T,
+  initData?: T;
 }>;
 
 type State<T> = ExpiredState | FetchingState<T> | FetchedState<T>;
 
 type ExpiredState = Readonly<{
-  type: "expired",
+  type: "expired";
 }>;
 
 type FetchingState<T> = Readonly<{
-  type: "fetching",
-  promise: Promise<T>,
-  resolve: ResolveFunc<T>,
-  reject: RejectFunc,
-  cancel: CancelFunc,
+  type: "fetching";
+  promise: Promise<T>;
+  resolve: ResolveFunc<T>;
+  reject: RejectFunc;
+  cancel: CancelFunc;
 }>;
 
 type FetchedState<T> = Readonly<{
-  type: "fetched",
-  promise: Promise<T>,
+  type: "fetched";
+  promise: Promise<T>;
 }>;
 
 /**
@@ -67,7 +67,8 @@ export class Catcher<T> {
       case "fetched":
         this.state = { type: "expired" };
         break;
-      default: // never
+      default:
+        // never
         throw new Error("invalid state");
     }
   }
@@ -95,7 +96,8 @@ export class Catcher<T> {
         return this.state.promise;
       case "fetched":
         return this.state.promise;
-      default: // never
+      default:
+        // never
         throw new Error("invalid state");
     }
   }
