@@ -1,39 +1,55 @@
 "use strict";
 
 module.exports = {
-  "overrides": [
+  plugins: ["prettier", "jest", "jest-formatting"],
+  overrides: [
     {
-      "files"        : ["*.{ts,tsx}"],
-      "extends"      : ["@susisu/eslint-config/preset/ts-types"],
-      "parserOptions": {
-        "ecmaVersion": 2018,
-        "sourceType" : "module",
-        "project"    : "./tsconfig.json",
+      files: ["*.{ts,tsx}"],
+      extends: [
+        "@susisu/eslint-config/preset/ts-types",
+        "plugin:eslint-comments/recommended",
+        "prettier",
+        "prettier/@typescript-eslint",
+      ],
+      parserOptions: {
+        ecmaVersion: 2019,
+        sourceType: "module",
+        project: "./tsconfig.json",
       },
-      "env": {
-        "es6": true,
+      env: {
+        es6: true,
+        browser: true,
+      },
+      rules: {
+        "prettier/prettier": "error",
+        "eslint-comments/no-unused-disable": "error",
       },
     },
     {
-      "files": ["*.{test,spec}.{ts,tsx}"],
-      "env"  : {
-        "node": true,
-        "jest": true,
-      },
-      "globals": {
-        "fail": true,
+      files: ["*.{test,spec}.{ts,tsx}", "src/**/__tests__/**/*.{ts,tsx}"],
+      extends: ["plugin:jest/recommended", "plugin:jest-formatting/recommended"],
+      env: {
+        "jest/globals": true,
       },
     },
     {
-      "files"        : ["*.js"],
-      "extends"      : ["@susisu/eslint-config/preset/es"],
-      "parserOptions": {
-        "ecmaVersion": 2018,
-        "sourceType" : "script",
+      files: ["*.js"],
+      extends: [
+        "@susisu/eslint-config/preset/es",
+        "plugin:eslint-comments/recommended",
+        "prettier",
+      ],
+      parserOptions: {
+        ecmaVersion: 2019,
+        sourceType: "script",
       },
-      "env": {
-        "es6" : true,
-        "node": true,
+      env: {
+        es6: true,
+        node: true,
+      },
+      rules: {
+        "prettier/prettier": "error",
+        "eslint-comments/no-unused-disable": "error",
       },
     },
   ],
