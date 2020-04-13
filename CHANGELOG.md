@@ -1,3 +1,6 @@
+## 0.2.1 (2020-04-13)
+- Published internal module as [@susisu/promise-utils](https://github.com/susisu/promise-utils)
+
 ## 0.2.0 (2019-12-29)
 ### Breaking changes
 - `initData` is now optional and `fresh` is removed from config
