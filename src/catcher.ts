@@ -1,4 +1,4 @@
-import { ResolveFunc, RejectFunc, CancelFunc, triplet, attachActions } from "./promise";
+import { ResolveFunc, RejectFunc, CancelFunc, triplet, attachActions } from "@susisu/promise-utils";
 
 type Config<T> = Readonly<{
   /**

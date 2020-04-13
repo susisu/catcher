@@ -1,5 +1,5 @@
+import { ResolveFunc, RejectFunc, triplet } from "@susisu/promise-utils";
 import { Catcher } from "./catcher";
-import { ResolveFunc, RejectFunc, triplet } from "./promise";
 
 describe("catcher", () => {
   describe("Catcher", () => {
