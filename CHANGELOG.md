@@ -1,4 +1,4 @@
-## 0.3.0 (yyyy-mm-dd)
+## 0.3.0 (2020-06-13)
 ### Features
 - Add `#getCurrentState()` and `#unasfeGet()`
 
