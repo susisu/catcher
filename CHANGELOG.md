@@ -1,6 +1,6 @@
 ## 0.3.0 (2020-06-13)
 ### Features
-- Add `#getCurrentState()` and `#unasfeGet()`
+- Add `#getCurrentState()` and `#unsafeGet()`
 
 ## 0.2.1 (2020-04-13)
 - Published internal module as [@susisu/promise-utils](https://github.com/susisu/promise-utils)
