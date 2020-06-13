@@ -35,6 +35,34 @@ describe("catcher", () => {
       });
     });
 
+    describe("#getCurrentState", () => {
+      test("it returns a string that represents the current state", async () => {
+        const catcher = new Catcher({ fetcher: () => Promise.resolve(42) });
+        // state: expired
+        expect(catcher.getCurrentState()).toBe("expired");
+        const fetch = catcher.fetch();
+        // state: fetching
+        expect(catcher.getCurrentState()).toBe("fetching");
+        await fetch;
+        // state: fetched
+        expect(catcher.getCurrentState()).toBe("fetched");
+      });
+    });
+
+    describe("#unsafeGet", () => {
+      test("it returns the already fetched data, or throws error if unavailable", async () => {
+        const catcher = new Catcher({ fetcher: () => Promise.resolve(42) });
+        // state: expired
+        expect(() => catcher.unsafeGet()).toThrow(new Error("Cannot get data: expired"));
+        const fetch = catcher.fetch();
+        // state: fetching
+        expect(() => catcher.unsafeGet()).toThrow(new Error("Cannot get data: fetching"));
+        await fetch;
+        // state: fetched
+        expect(catcher.unsafeGet()).toBe(42);
+      });
+    });
+
     describe("#expire", () => {
       test("calling in expired state has no effect", async () => {
         const fetcher = jest.fn(() => Promise.resolve(42));

@@ -13,6 +13,7 @@ type Config<T> = Readonly<{
 }>;
 
 type State<T> = ExpiredState | FetchingState<T> | FetchedState<T>;
+export type StateType = State<unknown>["type"];
 
 type ExpiredState = Readonly<{
   type: "expired";
@@ -29,6 +30,7 @@ type FetchingState<T> = Readonly<{
 type FetchedState<T> = Readonly<{
   type: "fetched";
   promise: Promise<T>;
+  data: T;
 }>;
 
 /**
@@ -45,8 +47,30 @@ export class Catcher<T> {
     if (config.initData === undefined) {
       this.state = { type: "expired" };
     } else {
-      this.state = { type: "fetched", promise: Promise.resolve(config.initData) };
+      this.state = {
+        type: "fetched",
+        promise: Promise.resolve(config.initData),
+        data: config.initData,
+      };
     }
+  }
+
+  /**
+   * Gets the current state.
+   */
+  getCurrentState(): StateType {
+    return this.state.type;
+  }
+
+  /**
+   * Gets the already fetched data.
+   * If the current state is not "fetched", it throws error.
+   */
+  unsafeGet(): T {
+    if (this.state.type !== "fetched") {
+      throw new Error(`Cannot get data: ${this.state.type}`);
+    }
+    return this.state.data;
   }
 
   /**
@@ -81,8 +105,8 @@ export class Catcher<T> {
       case "expired": {
         const [promise, resolve, reject] = triplet<T>();
         promise.then(
-          () => {
-            this.state = { type: "fetched", promise };
+          data => {
+            this.state = { type: "fetched", promise, data };
           },
           () => {
             this.state = { type: "expired" };
