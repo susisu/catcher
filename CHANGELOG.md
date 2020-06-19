@@ -1,4 +1,4 @@
-## 0.4.0 (yyyy-mm-dd)
+## 0.4.0 (2020-06-20)
 ### Features
 - Add `ttl` option to expire cache after specified duration
 - Add `refetch` option to `#expire()` to control whether to discard ongoing fetch

@@ -1,6 +1,6 @@
 {
   "name": "@susisu/catcher",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "cached fetcher",
   "repository": "https://github.com/susisu/catcher.git",
   "author": "Susisu <susisu2413@yahoo.co.jp>",
