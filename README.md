@@ -13,7 +13,7 @@ yarn add @susisu/catcher
 ``` typescript
 import { Catcher } from "@susisu/catcher";
 
-const catcher = new Catcher<{ list: string[] }>({
+const catcher = new Catcher({
   fetcher: () => fetchFromSource(params),
 });
 
