@@ -35,6 +35,65 @@ describe("catcher", () => {
       });
     });
 
+    describe("TTL", () => {
+      beforeEach(() => {
+        jest.useFakeTimers();
+      });
+
+      afterEach(() => {
+        jest.clearAllTimers();
+        jest.useRealTimers();
+      });
+
+      const ttl = 60 * 1000;
+
+      test("it does nothing after TTL in expired state", async () => {
+        const fetcher = jest.fn(() => Promise.resolve(42));
+        const catcher = new Catcher({ fetcher, ttl });
+        // state: expired
+        jest.runAllTimers();
+        const fetch = catcher.fetch();
+        // state: fetching
+        expect(fetcher).toHaveBeenCalledTimes(1);
+        const data = await fetch;
+        // state: fetched
+        expect(data).toBe(42);
+      });
+
+      test("it does nothing after TTL in fetching state", async () => {
+        const fetcher = jest.fn(() => Promise.resolve(42));
+        const catcher = new Catcher({ fetcher, ttl });
+        // state: expired
+        const fetch = catcher.fetch();
+        // state: fetching
+        expect(fetcher).toHaveBeenCalledTimes(1);
+        jest.runAllTimers();
+        expect(fetcher).toHaveBeenCalledTimes(1);
+        const data = await fetch;
+        // state: fetched
+        expect(data).toBe(42);
+      });
+
+      test("it expires cache after TTL in fetched state", async () => {
+        const fetcher = jest.fn(() => Promise.resolve(42));
+        const catcher = new Catcher({ fetcher, ttl });
+        // state: expired
+        const fetch1 = catcher.fetch();
+        // state: fetching
+        expect(fetcher).toHaveBeenCalledTimes(1);
+        await fetch1;
+        // state: fetched
+        jest.runAllTimers();
+        // state: expired
+        const fetch2 = catcher.fetch();
+        // state: fetching
+        expect(fetcher).toHaveBeenCalledTimes(2);
+        const data = await fetch2;
+        // state: fetched
+        expect(data).toBe(42);
+      });
+    });
+
     describe("#getCurrentState", () => {
       test("it returns a string that represents the current state", async () => {
         const catcher = new Catcher({ fetcher: () => Promise.resolve(42) });
@@ -103,6 +162,20 @@ describe("catcher", () => {
         const data = await fetch;
         // state: fetched
         expect(data).toBe(43);
+      });
+
+      test("calling in fetching state has no effect if refetch = false is specified", async () => {
+        const fetcher = jest.fn(() => Promise.resolve(42));
+        const catcher = new Catcher({ fetcher });
+        // state: expired
+        const fetch = catcher.fetch();
+        // state: fetching
+        expect(fetcher).toHaveBeenCalledTimes(1);
+        catcher.expire(false);
+        expect(fetcher).toHaveBeenCalledTimes(1);
+        const data = await fetch;
+        // state: fetched
+        expect(data).toBe(42);
       });
 
       test("calling in fetched state discards the last successful fetch", async () => {

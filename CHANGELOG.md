@@ -1,3 +1,8 @@
+## 0.4.0 (yyyy-mm-dd)
+### Features
+- Add `ttl` option to expire cache after specified duration
+- Add `refetch` option to `#expire()` to control whether to discard ongoing fetch
+
 ## 0.3.0 (2020-06-13)
 ### Features
 - Add `#getCurrentState()` and `#unsafeGet()`

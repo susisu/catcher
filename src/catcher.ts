@@ -1,6 +1,9 @@
 import { ResolveFunc, RejectFunc, CancelFunc, triplet, attachActions } from "@susisu/promise-utils";
 
-type Config<T> = Readonly<{
+declare function setTimeout(callback: () => void, delay: number): unknown;
+declare function clearTimeout(timeout: unknown): void;
+
+export type Config<T> = Readonly<{
   /**
    * A function that fetches data.
    */
@@ -10,6 +13,10 @@ type Config<T> = Readonly<{
    * the cache is expired.
    */
   initData?: T;
+  /**
+   * Specifies time to live for cache, in milliseconds.
+   */
+  ttl?: number;
 }>;
 
 type State<T> = ExpiredState | FetchingState<T> | FetchedState<T>;
@@ -38,21 +45,51 @@ type FetchedState<T> = Readonly<{
  */
 export class Catcher<T> {
   private fetcher: () => Promise<T>;
+  private ttl: number | undefined;
 
   private state: State<T>;
+  private ttlTimeout: unknown | undefined;
 
   constructor(config: Config<T>) {
     this.fetcher = config.fetcher;
+    this.ttl = config.ttl;
 
-    if (config.initData === undefined) {
-      this.state = { type: "expired" };
-    } else {
-      this.state = {
+    this.state = { type: "expired" };
+    this.ttlTimeout = undefined;
+
+    if (config.initData !== undefined) {
+      this.setState({
         type: "fetched",
         promise: Promise.resolve(config.initData),
         data: config.initData,
-      };
+      });
     }
+  }
+
+  private setState(state: State<T>): void {
+    this.state = state;
+    if (this.state.type === "fetched") {
+      this.resetTtlTimeout();
+    } else {
+      this.unsetTtlTimeout();
+    }
+  }
+
+  private unsetTtlTimeout(): void {
+    if (this.ttlTimeout === undefined) {
+      return;
+    }
+    clearTimeout(this.ttlTimeout);
+  }
+
+  private resetTtlTimeout(): void {
+    this.unsetTtlTimeout();
+    if (this.ttl === undefined) {
+      return;
+    }
+    this.ttlTimeout = setTimeout(() => {
+      this.expire(false);
+    }, this.ttl);
   }
 
   /**
@@ -75,21 +112,24 @@ export class Catcher<T> {
 
   /**
    * Expires the cache or ongoing fetch.
+   * @param refetch Specifies whether it should discard ongoing fetch and start a new one.
+   *                (default = true)
    */
-  expire(): void {
+  expire(refetch: boolean = true): void {
     switch (this.state.type) {
       case "expired":
         // noop
         break;
-      case "fetching": {
-        this.state.cancel.call(undefined);
-        const { promise, resolve, reject } = this.state;
-        const cancel = this.refetch(resolve, reject);
-        this.state = { type: "fetching", promise, resolve, reject, cancel };
+      case "fetching":
+        if (refetch) {
+          this.state.cancel.call(undefined);
+          const { promise, resolve, reject } = this.state;
+          const cancel = this.refetch(resolve, reject);
+          this.setState({ type: "fetching", promise, resolve, reject, cancel });
+        }
         break;
-      }
       case "fetched":
-        this.state = { type: "expired" };
+        this.setState({ type: "expired" });
         break;
       default:
         // never
@@ -106,14 +146,14 @@ export class Catcher<T> {
         const [promise, resolve, reject] = triplet<T>();
         promise.then(
           data => {
-            this.state = { type: "fetched", promise, data };
+            this.setState({ type: "fetched", promise, data });
           },
           () => {
-            this.state = { type: "expired" };
+            this.setState({ type: "expired" });
           }
         );
         const cancel = this.refetch(resolve, reject);
-        this.state = { type: "fetching", promise, resolve, reject, cancel };
+        this.setState({ type: "fetching", promise, resolve, reject, cancel });
         return promise;
       }
       case "fetching":
