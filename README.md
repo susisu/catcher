@@ -1,6 +1,6 @@
 # @susisu/catcher
 
-[![Build Status](https://travis-ci.com/susisu/catcher.svg?branch=master)](https://travis-ci.com/susisu/catcher)
+[![CI](https://github.com/susisu/catcher/workflows/CI/badge.svg)](https://github.com/susisu/catcher/actions?query=workflow%3ACI)
 
 ``` shell
 npm i @susisu/catcher
