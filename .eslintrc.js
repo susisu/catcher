@@ -9,7 +9,6 @@ module.exports = {
         "@susisu/eslint-config/preset/ts-types",
         "plugin:eslint-comments/recommended",
         "prettier",
-        "prettier/@typescript-eslint",
       ],
       parserOptions: {
         ecmaVersion: 2019,
