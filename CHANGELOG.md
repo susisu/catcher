@@ -1,3 +1,11 @@
+## 0.5.0 (2021-07-23)
+### Breaking changes
+- Drop Node.js 10 support
+
+### Features
+- Add explicit `| undefined` on optional properties in preparation for `--exactOptionalPropertyTypes` in TS 4.4
+- Export `Config` and `StateType` types
+
 ## 0.4.0 (2020-06-20)
 ### Features
 - Add `ttl` option to expire cache after specified duration
