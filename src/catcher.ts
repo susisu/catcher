@@ -12,11 +12,11 @@ export type Config<T> = Readonly<{
    * Optional initial data stored in the cache. If specified, new data will not be fetched until
    * the cache is expired.
    */
-  initData?: T;
+  initData?: T | undefined;
   /**
    * Specifies time to live for cache, in milliseconds.
    */
-  ttl?: number;
+  ttl?: number | undefined;
 }>;
 
 type State<T> = ExpiredState | FetchingState<T> | FetchedState<T>;
