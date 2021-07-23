@@ -16,6 +16,7 @@
     "lint-fix:eslint": "eslint --fix '*.js' src",
     "lint:prettier": "prettier --check '*.js' src",
     "lint-fix:prettier": "prettier --write '*.js' src",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "jest",
     "build": "tsc --build tsconfig.build.json",
     "clean": "run-s clean:build clean:rm",
