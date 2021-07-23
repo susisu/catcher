@@ -1,1 +1,1 @@
-export { Catcher } from "./catcher";
+export { Catcher, Config, StateType } from "./catcher";
