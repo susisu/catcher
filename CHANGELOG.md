@@ -1,3 +1,7 @@
+## 0.6.0 (2022-05-28)
+- Drop Node.js 12 support
+- Include source files in the distribution
+
 ## 0.5.0 (2021-07-23)
 ### Breaking changes
 - Drop Node.js 10 support
