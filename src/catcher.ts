@@ -41,6 +41,10 @@ type FetchedState<T> = Readonly<{
   data: T;
 }>;
 
+function unreachable(x: never): never {
+  throw new Error(`reached: ${JSON.stringify(x)}`);
+}
+
 /**
  * Fetcher with cache.
  */
@@ -133,8 +137,7 @@ export class Catcher<T> {
         this.setState({ type: "expired" });
         break;
       default:
-        // never
-        throw new Error("invalid state");
+        unreachable(this.state);
     }
   }
 
@@ -162,8 +165,7 @@ export class Catcher<T> {
       case "fetched":
         return this.state.promise;
       default:
-        // never
-        throw new Error("invalid state");
+        return unreachable(this.state);
     }
   }
 
