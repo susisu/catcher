@@ -1,6 +1,7 @@
 import { ResolveFunc, RejectFunc, CancelFunc, triplet, attachActions } from "@susisu/promise-utils";
 
-declare function setTimeout(callback: () => void, delay: number): unknown;
+type Timeout = object | number;
+declare function setTimeout(callback: () => void, delay: number): Timeout;
 declare function clearTimeout(timeout: unknown): void;
 
 export type Config<T> = Readonly<{
@@ -48,7 +49,7 @@ export class Catcher<T> {
   private ttl: number | undefined;
 
   private state: State<T>;
-  private ttlTimeout: unknown | undefined;
+  private ttlTimeout: Timeout | undefined;
 
   constructor(config: Config<T>) {
     this.fetcher = config.fetcher;
