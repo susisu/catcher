@@ -3,9 +3,12 @@
 [![CI](https://github.com/susisu/catcher/workflows/CI/badge.svg)](https://github.com/susisu/catcher/actions?query=workflow%3ACI)
 
 ``` shell
+# npm
 npm i @susisu/catcher
-# or
+# yarn
 yarn add @susisu/catcher
+# pnpm
+pnpm add @susisu/catcher
 ```
 
 ## Usage
