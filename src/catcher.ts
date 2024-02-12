@@ -1,4 +1,4 @@
-import type { ResolveFunc, RejectFunc, CancelFunc} from "@susisu/promise-utils";
+import type { ResolveFunc, RejectFunc, CancelFunc } from "@susisu/promise-utils";
 import { triplet, attachActions } from "@susisu/promise-utils";
 
 type Timeout = object | number;

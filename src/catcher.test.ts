@@ -1,5 +1,5 @@
 import { vi, describe, test, beforeEach, afterEach, expect } from "vitest";
-import type { ResolveFunc, RejectFunc} from "@susisu/promise-utils";
+import type { ResolveFunc, RejectFunc } from "@susisu/promise-utils";
 import { triplet } from "@susisu/promise-utils";
 import { Catcher } from "./catcher";
 
