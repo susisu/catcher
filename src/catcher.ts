@@ -149,12 +149,12 @@ export class Catcher<T> {
       case "expired": {
         const [promise, resolve, reject] = triplet<T>();
         promise.then(
-          data => {
+          (data) => {
             this.setState({ type: "fetched", promise, data });
           },
           () => {
             this.setState({ type: "expired" });
-          }
+          },
         );
         const cancel = this.refetch(resolve, reject);
         this.setState({ type: "fetching", promise, resolve, reject, cancel });
