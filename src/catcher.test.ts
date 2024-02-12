@@ -1,10 +1,11 @@
+import { vi, describe, test, beforeEach, afterEach, expect } from "vitest";
 import { ResolveFunc, RejectFunc, triplet } from "@susisu/promise-utils";
 import { Catcher } from "./catcher";
 
 describe("Catcher", () => {
   describe("constructor", () => {
     test("calling without initData initializes the catcher being in expired state", async () => {
-      const fetcher = jest.fn(() => Promise.resolve(42));
+      const fetcher = vi.fn(() => Promise.resolve(42));
       const catcher = new Catcher({ fetcher });
       // state: expired
       const fetch = catcher.fetch();
@@ -16,7 +17,7 @@ describe("Catcher", () => {
     });
 
     test("calling with initData initializes the catcher being in fetched state", async () => {
-      const fetcher = jest.fn(() => Promise.resolve(42));
+      const fetcher = vi.fn(() => Promise.resolve(42));
       const catcher = new Catcher({ fetcher, initData: 0 });
       // state: fetched
       const fetch1 = catcher.fetch();
@@ -36,21 +37,21 @@ describe("Catcher", () => {
 
   describe("TTL", () => {
     beforeEach(() => {
-      jest.useFakeTimers();
+      vi.useFakeTimers();
     });
 
     afterEach(() => {
-      jest.clearAllTimers();
-      jest.useRealTimers();
+      vi.clearAllTimers();
+      vi.useRealTimers();
     });
 
     const ttl = 60 * 1000;
 
     test("it does nothing after TTL in expired state", async () => {
-      const fetcher = jest.fn(() => Promise.resolve(42));
+      const fetcher = vi.fn(() => Promise.resolve(42));
       const catcher = new Catcher({ fetcher, ttl });
       // state: expired
-      jest.runAllTimers();
+      vi.runAllTimers();
       const fetch = catcher.fetch();
       // state: fetching
       expect(fetcher).toHaveBeenCalledTimes(1);
@@ -60,13 +61,13 @@ describe("Catcher", () => {
     });
 
     test("it does nothing after TTL in fetching state", async () => {
-      const fetcher = jest.fn(() => Promise.resolve(42));
+      const fetcher = vi.fn(() => Promise.resolve(42));
       const catcher = new Catcher({ fetcher, ttl });
       // state: expired
       const fetch = catcher.fetch();
       // state: fetching
       expect(fetcher).toHaveBeenCalledTimes(1);
-      jest.runAllTimers();
+      vi.runAllTimers();
       expect(fetcher).toHaveBeenCalledTimes(1);
       const data = await fetch;
       // state: fetched
@@ -74,7 +75,7 @@ describe("Catcher", () => {
     });
 
     test("it expires cache after TTL in fetched state", async () => {
-      const fetcher = jest.fn(() => Promise.resolve(42));
+      const fetcher = vi.fn(() => Promise.resolve(42));
       const catcher = new Catcher({ fetcher, ttl });
       // state: expired
       const fetch1 = catcher.fetch();
@@ -82,7 +83,7 @@ describe("Catcher", () => {
       expect(fetcher).toHaveBeenCalledTimes(1);
       await fetch1;
       // state: fetched
-      jest.runAllTimers();
+      vi.runAllTimers();
       // state: expired
       const fetch2 = catcher.fetch();
       // state: fetching
@@ -123,7 +124,7 @@ describe("Catcher", () => {
 
   describe("#expire", () => {
     test("calling in expired state has no effect", async () => {
-      const fetcher = jest.fn(() => Promise.resolve(42));
+      const fetcher = vi.fn(() => Promise.resolve(42));
       const catcher = new Catcher({ fetcher });
       // state: expired
       catcher.expire();
@@ -138,7 +139,7 @@ describe("Catcher", () => {
     test("calling in fetching state cancels the ongoing fetch and starts a new one", async () => {
       let resolve: ResolveFunc<number> = () => {};
       let reject: RejectFunc = () => {};
-      const fetcher = jest.fn(() => {
+      const fetcher = vi.fn(() => {
         const [promise, resolve_, reject_] = triplet<number>();
         resolve = resolve_;
         reject = reject_;
@@ -164,7 +165,7 @@ describe("Catcher", () => {
     });
 
     test("calling in fetching state has no effect if refetch = false is specified", async () => {
-      const fetcher = jest.fn(() => Promise.resolve(42));
+      const fetcher = vi.fn(() => Promise.resolve(42));
       const catcher = new Catcher({ fetcher });
       // state: expired
       const fetch = catcher.fetch();
@@ -178,7 +179,7 @@ describe("Catcher", () => {
     });
 
     test("calling in fetched state discards the last successful fetch", async () => {
-      const fetcher = jest.fn(() => Promise.resolve(42));
+      const fetcher = vi.fn(() => Promise.resolve(42));
       const catcher = new Catcher({ fetcher });
       // state: expired
       const fetch1 = catcher.fetch();
@@ -199,7 +200,7 @@ describe("Catcher", () => {
 
   describe("#fetch", () => {
     test("calling in expired state starts a new fetch", async () => {
-      const fetcher = jest.fn(() => Promise.resolve(42));
+      const fetcher = vi.fn(() => Promise.resolve(42));
       const catcher = new Catcher({ fetcher });
       // state: expired
       const fetch = catcher.fetch();
@@ -213,7 +214,7 @@ describe("Catcher", () => {
     test("promise is rejected if fetching failed", async () => {
       let resolve: ResolveFunc<number> = () => {};
       let reject: RejectFunc = () => {};
-      const fetcher = jest.fn(() => {
+      const fetcher = vi.fn(() => {
         const [promise, resolve_, reject_] = triplet<number>();
         resolve = resolve_;
         reject = reject_;
@@ -238,7 +239,7 @@ describe("Catcher", () => {
 
     test("calling in fetching state reuses the ongoing fetch", async () => {
       let resolve: ResolveFunc<number> = () => {};
-      const fetcher = jest.fn(() => {
+      const fetcher = vi.fn(() => {
         const [promise, resolve_] = triplet<number>();
         resolve = resolve_;
         return promise;
@@ -260,7 +261,7 @@ describe("Catcher", () => {
     test("all promises are rejected if fetching failed", async () => {
       let resolve: ResolveFunc<number> = () => {};
       let reject: RejectFunc = () => {};
-      const fetcher = jest.fn(() => {
+      const fetcher = vi.fn(() => {
         const [promise, resolve_, reject_] = triplet<number>();
         resolve = resolve_;
         reject = reject_;
@@ -287,7 +288,7 @@ describe("Catcher", () => {
     });
 
     test("calling in fetched state reuses the last successful fetch", async () => {
-      const fetcher = jest.fn(() => Promise.resolve(42));
+      const fetcher = vi.fn(() => Promise.resolve(42));
       const catcher = new Catcher({ fetcher });
       // state: expired
       const fetch1 = catcher.fetch();
