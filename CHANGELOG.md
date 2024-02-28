@@ -1,3 +1,7 @@
+## 0.7.1 (2024-02-29)
+
+- Upgrade dependencies
+
 ## 0.7.0 (2024-02-12)
 
 - **BREAKING** Drop support for Node.js 14 and 16
